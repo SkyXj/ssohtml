@@ -2,6 +2,7 @@ import axios from 'axios'
 import { Notification, MessageBox, Message } from 'element-ui'
 // import store from '@/store'
 import { getToken } from '@/utils/auth'
+import { setToken } from './auth'
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 // axios.defaults.headers['Content-Type'] = 'text/plain'
@@ -30,9 +31,10 @@ service.interceptors.request.use(
 
 // 响应拦截器
 service.interceptors.response.use(res => {
-    const code = res.data.code
-    console.log(code);
-    return res.data
+    let token=res.headers['authorization'];
+    setToken(token);
+    console.log("token"+"");
+    return res.data;
     // if (code === 401) {
     //   MessageBox.confirm(
     //     '登录状态已过期，您可以继续留在该页面，或者重新登录',

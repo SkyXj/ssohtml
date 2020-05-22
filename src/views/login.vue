@@ -60,6 +60,10 @@ export default {
       let that=this;
       login(that.form).then(response=>{
           console.log(response);
+          if(response.code==200){
+            that.$message(response.msg);
+            this.$router.push({ name: "Home" });
+          }
       });
     }
   }

@@ -1,10 +1,9 @@
 import request from '@/utils/request'
 
 // 查询登录日志列表
-export function login(data) {
+export function test() {
   return request({
-    url: '/login',
-    method: 'post',
-    params: data
+    url: '/test',
+    method: 'get'
   })
 }

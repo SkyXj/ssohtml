@@ -63,6 +63,8 @@ export default {
           if(response.code==200){
             that.$message(response.msg);
             this.$router.push({ name: "Home" });
+          }else{
+            that.$message(response.msg);
           }
       });
     }

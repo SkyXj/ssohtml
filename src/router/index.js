@@ -14,6 +14,11 @@ export const constantRoutes = [
         path:'/home',
         name:'Home',
         component: () => import("@/views/home")
+    },
+    {
+        path:'/video',
+        name:'Video',
+        component: () => import("@/views/video")
     }
 ]
 

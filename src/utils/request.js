@@ -2,7 +2,7 @@ import axios from 'axios'
 import { Notification, MessageBox, Message } from 'element-ui'
 // import store from '@/store'
 import { getToken } from '@/utils/auth'
-import { setToken } from './auth'
+import { setToken, removeToken } from './auth'
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 // axios.defaults.headers['Content-Type'] = 'text/plain'
@@ -31,32 +31,54 @@ service.interceptors.request.use(
 
 // 响应拦截器
 service.interceptors.response.use(res => {
+    //传过来就变成小写了
     let token=res.headers['authorization'];
-    setToken(token);
+    if(token){
+      setToken(token);
+    }
     console.log("token"+"");
-    return res.data;
-    // if (code === 401) {
-    //   MessageBox.confirm(
-    //     '登录状态已过期，您可以继续留在该页面，或者重新登录',
-    //     '系统提示',
-    //     {
-    //       confirmButtonText: '重新登录',
-    //       cancelButtonText: '取消',
-    //       type: 'warning'
-    //     }
-    //   ).then(() => {
-    //     store.dispatch('LogOut').then(() => {
-    //       location.reload() // 为了重新实例化vue-router对象 避免bug
-    //     })
-    //   })
-    // } else if (code !== 200) {
-    //   Notification.error({
-    //     title: res.data.msg
-    //   })
-    //   return Promise.reject('error')
-    // } else {
-    //   return res.data
-    // }
+    const code = res.data.code
+    // return res.data;
+    if (code === 401) {
+      MessageBox.confirm(
+        '登录状态已过期，您可以继续留在该页面，或者重新登录',
+        '系统提示',
+        {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).then(() => {
+        // store.dispatch('LogOut').then(() => {
+        //   location.reload() // 为了重新实例化vue-router对象 避免bug
+        // })
+        removeToken();
+        this.$router.push({ name: "Login" });
+      })
+    } else if(code===403){
+      MessageBox.confirm(
+        '登录状态已过期，您可以继续留在该页面，或者重新登录',
+        '系统提示',
+        {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).then(() => {
+        // store.dispatch('LogOut').then(() => {
+        //   location.reload() // 为了重新实例化vue-router对象 避免bug
+        // })
+        removeToken();
+        this.$router.push({ name: "Login" });
+      })
+    }else if (code !== 200) {
+      Notification.error({
+        title: res.data.msg
+      })
+      return Promise.reject('error')
+    } else {
+      return res.data
+    }
   },
   error => {
     console.log('err' + error)
@@ -65,6 +87,8 @@ service.interceptors.response.use(res => {
       type: 'error',
       duration: 5 * 1000
     })
+    removeToken();
+    this.$router.push({ name: "Login" });
     return Promise.reject(error)
   }
 )
